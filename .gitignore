@@ -59,7 +59,8 @@ vendor/
 
 # 日志文件
 *.log
-logs/
+logs/*
+!logs/.gitkeep
 
 # 临时文件
 tmp/
