@@ -1,0 +1,76 @@
+# 操作系统文件
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Go 编译产物
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+/bin/
+/dist/
+/build/
+
+# Go 测试覆盖率
+*.coverprofile
+coverage.html
+coverage.out
+
+# Go 依赖和工具
+vendor/
+*.mod.bak
+
+# IDE 和编辑器
+.idea/
+.cursor/
+.vscode/
+*.iml
+*.sublime-project
+*.sublime-workspace
+.project
+.classpath
+.settings/
+*.code-workspace
+
+# GoLand
+.idea/
+
+# Vim
+*.swp
+*.swo
+*.swn
+.netrwhist
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# 日志文件
+*.log
+logs/
+
+# 临时文件
+tmp/
+temp/
+*.tmp
+*.bak
+*.cache
+
+# 项目特定
+shell/*
+!shell/.gitkeep
+
+# 环境变量文件
+# .env
