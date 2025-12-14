@@ -9,18 +9,94 @@
 - 记录详细的执行日志，包括执行时间、结果状态和输出内容
 - 支持日志分类存储，按 tag 和日期组织日志文件
 
+## 编译说明
+
+### 单平台编译
+
+在当前系统平台编译可执行文件：
+
+```bash
+# 编译为当前平台的可执行文件
+go build -o shellgo main.go
+
+# 或者使用默认名称（生成 shellgo 或 shellgo.exe）
+go build main.go
+```
+
+编译后的可执行文件可以直接运行：
+
+```bash
+# Linux/macOS
+./shellgo
+
+# Windows
+shellgo.exe
+```
+
+### 多平台交叉编译
+
+项目提供了 `build.sh` 脚本，可以一次性编译多个平台的可执行文件：
+
+```bash
+# 赋予执行权限（首次使用）
+chmod +x build.sh
+
+# 执行编译脚本
+./build.sh
+```
+
+编译脚本会生成以下平台的可执行文件，并保存在 `bin/` 目录下：
+
+- **Windows**: `shellgo_windows_amd64.exe`, `shellgo_windows_386.exe`, `shellgo_windows_arm64.exe`
+- **Linux**: `shellgo_linux_amd64`, `shellgo_linux_386`, `shellgo_linux_arm64`, `shellgo_linux_arm`
+- **macOS**: `shellgo_darwin_amd64`, `shellgo_darwin_arm64`
+
+### 手动指定平台编译
+
+如果需要手动指定目标平台进行交叉编译：
+
+```bash
+# Linux 64位
+GOOS=linux GOARCH=amd64 go build -o shellgo_linux_amd64 main.go
+
+# Windows 64位
+GOOS=windows GOARCH=amd64 go build -o shellgo_windows_amd64.exe main.go
+
+# macOS ARM64 (Apple Silicon)
+GOOS=darwin GOARCH=arm64 go build -o shellgo_darwin_arm64 main.go
+
+# macOS Intel
+GOOS=darwin GOARCH=amd64 go build -o shellgo_darwin_amd64 main.go
+```
+
+### 编译选项
+
+可以使用以下编译选项优化可执行文件：
+
+```bash
+# 去除调试信息，减小文件大小
+go build -ldflags="-s -w" -o shellgo main.go
+
+# 静态链接，生成独立可执行文件（不依赖系统库）
+CGO_ENABLED=0 go build -o shellgo main.go
+
+# 组合使用：静态链接 + 去除调试信息
+CGO_ENABLED=0 go build -ldflags="-s -w" -o shellgo main.go
+```
+
 ## 使用方法
 
 ### 启动服务
+
+开发环境直接运行：
 
 ```bash
 go run main.go
 ```
 
-或者编译后运行：
+或者使用编译后的可执行文件：
 
 ```bash
-go build -o shellgo
 ./shellgo
 ```
 
