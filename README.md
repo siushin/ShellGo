@@ -17,10 +17,10 @@
 
 ```bash
 # 编译为当前平台的可执行文件
-go build -o shellgo main.go
+go build -ldflags="-s -w" -o shellgo main.go
 
 # 或者使用默认名称（生成 shellgo 或 shellgo.exe）
-go build main.go
+go build -ldflags="-s -w" main.go
 ```
 
 编译后的可执行文件可以直接运行：
@@ -57,30 +57,38 @@ chmod +x build.sh
 
 ```bash
 # Linux 64位
-GOOS=linux GOARCH=amd64 go build -o shellgo_linux_amd64 main.go
+GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o shellgo_linux_amd64 main.go
 
 # Windows 64位
-GOOS=windows GOARCH=amd64 go build -o shellgo_windows_amd64.exe main.go
+GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o shellgo_windows_amd64.exe main.go
 
 # macOS ARM64 (Apple Silicon)
-GOOS=darwin GOARCH=arm64 go build -o shellgo_darwin_arm64 main.go
+GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o shellgo_darwin_arm64 main.go
 
 # macOS Intel
-GOOS=darwin GOARCH=amd64 go build -o shellgo_darwin_amd64 main.go
+GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o shellgo_darwin_amd64 main.go
 ```
 
 ### 编译选项
 
+**注意**：本文档中的所有编译命令默认都包含 `-ldflags="-s -w"` 参数（去除符号表和调试信息，减小文件大小）。如果需要保留调试信息以便调试，可以去掉该参数。
+
 可以使用以下编译选项优化可执行文件：
 
 ```bash
-# 去除调试信息，减小文件大小
+# 去除调试信息，减小文件大小（默认已包含）
 go build -ldflags="-s -w" -o shellgo main.go
 
+# 如果需要保留调试信息，去掉 -ldflags 参数
+go build -o shellgo main.go
+
 # 静态链接，生成独立可执行文件（不依赖系统库）
+CGO_ENABLED=0 go build -ldflags="-s -w" -o shellgo main.go
+
+# 静态链接 + 保留调试信息
 CGO_ENABLED=0 go build -o shellgo main.go
 
-# 组合使用：静态链接 + 去除调试信息
+# 组合使用：静态链接 + 去除调试信息（推荐）
 CGO_ENABLED=0 go build -ldflags="-s -w" -o shellgo main.go
 ```
 

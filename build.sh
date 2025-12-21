@@ -27,7 +27,7 @@ do
   fi
   
   echo "Building for $GOOS/$GOARCH..."
-  env GOOS=$GOOS GOARCH=$GOARCH go build -o bin/$output_name main.go
+  env GOOS=$GOOS GOARCH=$GOARCH go build -ldflags="-s -w" -o bin/$output_name .
   if [ $? -ne 0 ]; then
     echo "An error occurred. Aborting."
     exit 1
