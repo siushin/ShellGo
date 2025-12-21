@@ -9,9 +9,17 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"sync"
+	"syscall"
 	"time"
 
 	"github.com/joho/godotenv"
+)
+
+// 用于跟踪每个 tag 对应的正在执行的进程
+var (
+	runningProcesses = make(map[string]*exec.Cmd)
+	processMutex     sync.Mutex
 )
 
 func main() {
@@ -53,9 +61,52 @@ func handleHook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	
+	// 检查是否有相同 tag 的进程正在执行，如果有则终止
+	processMutex.Lock()
+	if oldCmd, exists := runningProcesses[tag]; exists {
+		log.Printf("检测到相同 tag (%s) 的进程正在执行，正在终止旧进程...", tag)
+		// 终止进程及其子进程
+		if oldCmd.Process != nil && oldCmd.Process.Pid > 0 {
+			pid := oldCmd.Process.Pid
+			// 使用负 PID 来终止整个进程组（包括子进程）
+			// 先尝试优雅终止（SIGTERM）
+			killCmd := exec.Command("kill", "-TERM", fmt.Sprintf("-%d", pid))
+			killCmd.Run()
+			// 等待一下让进程有机会优雅退出
+			time.Sleep(300 * time.Millisecond)
+			// 检查进程是否还在运行（使用 kill -0 检查进程组）
+			checkCmd := exec.Command("kill", "-0", fmt.Sprintf("-%d", pid))
+			if checkCmd.Run() == nil {
+				// 进程组还在运行，强制杀死（SIGKILL）
+				log.Printf("进程组仍在运行，强制终止...")
+				killCmd = exec.Command("kill", "-KILL", fmt.Sprintf("-%d", pid))
+				killCmd.Run()
+			}
+			// 也直接终止主进程（双重保险）
+			oldCmd.Process.Kill()
+		}
+		delete(runningProcesses, tag)
+		log.Printf("旧进程已终止")
+	}
+	processMutex.Unlock()
+	
 	// 执行 shell 脚本
 	cmd := exec.Command("sh", scriptPath)
+	// 设置进程组，以便能够终止子进程
+	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
+	
+	// 记录新进程
+	processMutex.Lock()
+	runningProcesses[tag] = cmd
+	processMutex.Unlock()
+	
+	// 执行脚本
 	output, err := cmd.CombinedOutput()
+	
+	// 执行完成后清理进程记录
+	processMutex.Lock()
+	delete(runningProcesses, tag)
+	processMutex.Unlock()
 	
 	// 计算耗时
 	duration := time.Since(startTime)
