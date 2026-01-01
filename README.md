@@ -157,3 +157,30 @@ http://localhost:8088?tag=deploy
 PORT=8088
 LOG_DIR=logs
 ```
+
+## 🧑🏻‍💻 关于作者
+
+多年开发经验，具有丰富的前、后端软件开发经验~
+
+微信：siushin
+
+Github：<https://github.com/siushin>
+
+个人博客：<http://www.siushin.com>
+
+邮箱：<a href="mailto:siushin@163.com">siushin@163.com</a>
+
+## 💡 反馈交流
+
+在使用过程中有任何想法、合作交流，请加我微信 `siushin` （备注 <mark>github</mark> ）：
+
+<img src="/static/images/siushin-WeChat.jpg" alt="添加我微信备注「github」" style="width: 180px;" />
+
+## ☕️ 打赏赞助
+
+如果你觉得知识对您有帮助，可以请作者喝一杯咖啡 ☕️
+
+<div class="coffee" style="display: flex;align-items: center;margin-top: 20px;">
+<img src="/static/images/siushin-WechatPay.jpg" alt="微信收款码" style="width: 180px;" />
+<img src="/static/images/siushin-Alipay.jpg" alt="支付宝收款码" style="width: 180px;" />
+</div>
